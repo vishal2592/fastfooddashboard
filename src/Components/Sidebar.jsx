@@ -19,7 +19,7 @@ import {
 const menuItems = [
   { title: 'Dashboard', path: '/admin', icon: LayoutDashboard },
   { title: 'Categories', path: '/admin/categories', icon: FolderOpen },
-  { title: 'Subcategories', path: '/admin/subcategories', icon: Layers },
+  // { title: 'Subcategories', path: '/admin/subcategories', icon: Layers },
   { title: 'Products', path: '/admin/products', icon: UtensilsCrossed },
   { title: 'Orders', path: '/admin/orders', icon: ShoppingBag },
   { title: 'Customers', path: '/admin/customers', icon: Users },

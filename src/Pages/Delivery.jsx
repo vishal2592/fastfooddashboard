@@ -290,7 +290,7 @@ const Delivery = () => {
                       <td className="py-3 px-4 text-sm text-gray-200">{delivery.customer}</td>
                       <td className="py-3 px-4 text-sm text-gray-400 hidden sm:table-cell truncate max-w-32">{delivery.address}</td>
                       <td className="py-3 px-4 text-sm text-gray-300 hidden md:table-cell">{delivery.items}</td>
-                      <td className="py-3 px-4 text-sm font-semibold text-white">₦{delivery.total.toFixed(2)}</td>
+                      <td className="py-3 px-4 text-sm font-semibold text-white">₹{delivery.total.toFixed(2)}</td>
                       <td className="py-3 px-4 text-sm text-gray-400 hidden lg:table-cell">{delivery.rider}</td>
                       <td className="py-3 px-4">
                         <span className={`inline-flex items-center gap-1 text-xs font-medium px-3 py-1 rounded-full ${statusConfig[delivery.status].bg} ${statusConfig[delivery.status].color}`}>
@@ -351,7 +351,7 @@ const Delivery = () => {
                   </p>
                   <div className="flex items-center justify-between mt-3">
                     <div>
-                      <span className="text-xl font-bold text-white">₦{delivery.total.toFixed(2)}</span>
+                      <span className="text-xl font-bold text-white">₹{delivery.total.toFixed(2)}</span>
                       <span className="text-xs text-gray-400 ml-2">{delivery.items} items</span>
                     </div>
                     <span className="text-xs text-gray-500 flex items-center gap-1">
@@ -458,7 +458,7 @@ const Delivery = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-400">Total</span>
-                  <span className="text-lg font-bold text-white">₦{selectedDelivery.total.toFixed(2)}</span>
+                  <span className="text-lg font-bold text-white">₹{selectedDelivery.total.toFixed(2)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-400">Assigned Rider</span>
@@ -536,7 +536,7 @@ const Delivery = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Total (₦)</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Total (₹)</label>
                     <input
                       type="number"
                       step="0.01"

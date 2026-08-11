@@ -339,11 +339,11 @@ const Products = () => {
                     <td className="py-3 px-4 text-sm">
                       {product.discount > 0 ? (
                         <div>
-                          <span className="text-gray-500 line-through text-xs mr-1">${product.originalPrice.toFixed(2)}</span>
-                          <span className="font-semibold text-emerald-400">${product.discountedPrice.toFixed(2)}</span>
+                          <span className="text-gray-500 line-through text-xs mr-1">₹{product.originalPrice.toFixed(2)}</span>
+                          <span className="font-semibold text-emerald-400">₹{product.discountedPrice.toFixed(2)}</span>
                         </div>
                       ) : (
-                        <span className="font-semibold text-white">${product.originalPrice.toFixed(2)}</span>
+                        <span className="font-semibold text-white">₹{product.originalPrice.toFixed(2)}</span>
                       )}
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-300 hidden md:table-cell">{product.discount > 0 ? `${product.discount}%` : '—'}</td>
@@ -412,11 +412,11 @@ const Products = () => {
                   <div>
                     {product.discount > 0 ? (
                       <div>
-                        <span className="text-gray-500 line-through text-xs">${product.originalPrice.toFixed(2)}</span>
-                        <span className="text-lg font-bold text-emerald-400 ml-1">${product.discountedPrice.toFixed(2)}</span>
+                        <span className="text-gray-500 line-through text-xs">₹{product.originalPrice.toFixed(2)}</span>
+                        <span className="text-lg font-bold text-emerald-400 ml-1">₹{product.discountedPrice.toFixed(2)}</span>
                       </div>
                     ) : (
-                      <span className="text-lg font-bold text-white">${product.originalPrice.toFixed(2)}</span>
+                      <span className="text-lg font-bold text-white">₹{product.originalPrice.toFixed(2)}</span>
                     )}
                   </div>
                   <div className="text-xs text-gray-400">Stock: {product.stock}</div>
@@ -525,7 +525,7 @@ const Products = () => {
                 <ImageUploadField />
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Original Price ($)</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Original Price (₹)</label>
                     <input
                       type="number"
                       step="0.01"
@@ -648,12 +648,12 @@ const Products = () => {
                   <div>
                     {viewingProduct.discount > 0 ? (
                       <div>
-                        <span className="text-gray-500 line-through text-sm mr-2">${viewingProduct.originalPrice.toFixed(2)}</span>
-                        <span className="text-lg font-bold text-emerald-400">${viewingProduct.discountedPrice.toFixed(2)}</span>
+                        <span className="text-gray-500 line-through text-sm mr-2">₹{viewingProduct.originalPrice.toFixed(2)}</span>
+                        <span className="text-lg font-bold text-emerald-400">₹{viewingProduct.discountedPrice.toFixed(2)}</span>
                         <span className="text-xs text-red-400 ml-2">({viewingProduct.discount}% off)</span>
                       </div>
                     ) : (
-                      <span className="text-lg font-bold text-white">${viewingProduct.originalPrice.toFixed(2)}</span>
+                      <span className="text-lg font-bold text-white">₹{viewingProduct.originalPrice.toFixed(2)}</span>
                     )}
                   </div>
                 </div>

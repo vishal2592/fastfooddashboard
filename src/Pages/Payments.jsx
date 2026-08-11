@@ -113,7 +113,7 @@ const Payments = () => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6">
           <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-4">
             <p className="text-xs text-gray-400">Total Payments</p>
-            <p className="text-2xl font-bold text-white">₦{totalAmount.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-white">₹{totalAmount.toFixed(2)}</p>
             <p className="text-xs text-gray-500">{filteredPayments.length} transactions</p>
           </div>
           <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-4">
@@ -223,7 +223,7 @@ const Payments = () => {
                           {payment.method}
                         </div>
                       </td>
-                      <td className="py-3 px-4 text-sm font-semibold text-white">₦{payment.amount.toFixed(2)}</td>
+                      <td className="py-3 px-4 text-sm font-semibold text-white">₹{payment.amount.toFixed(2)}</td>
                       <td className="py-3 px-4">
                         <span className={`inline-flex items-center gap-1 text-xs font-medium px-3 py-1 rounded-full ${statusConfig[payment.status].bg} ${statusConfig[payment.status].color}`}>
                           <StatusIcon size={12} />
@@ -267,7 +267,7 @@ const Payments = () => {
                   <p className="text-xs text-gray-400">{payment.email}</p>
                   <div className="flex items-center justify-between mt-3">
                     <div>
-                      <span className="text-xl font-bold text-white">₦{payment.amount.toFixed(2)}</span>
+                      <span className="text-xl font-bold text-white">₹{payment.amount.toFixed(2)}</span>
                       <span className="text-xs text-gray-400 ml-2">{payment.method}</span>
                     </div>
                     <span className="text-xs text-gray-500">{payment.date}</span>
@@ -359,7 +359,7 @@ const Payments = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-400">Amount</span>
-                  <span className="text-lg font-bold text-white">₦{selectedPayment.amount.toFixed(2)}</span>
+                  <span className="text-lg font-bold text-white">₹{selectedPayment.amount.toFixed(2)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-gray-400">Payment Method</span>

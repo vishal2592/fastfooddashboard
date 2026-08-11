@@ -22,7 +22,7 @@ const Dashboard = () => {
     },
     {
       label: 'Revenue',
-      value: '₦84,250',
+      value: '₹84,250',  // changed from ₦84,250
       change: '+8.2%',
       trend: 'up',
       icon: DollarSign,
@@ -65,11 +65,11 @@ const Dashboard = () => {
   ];
 
   const recentOrders = [
-    { id: '#1024', customer: 'Rahul Kumar', items: 'Cheese Burger x1', amount: '₦450', status: 'Completed', time: '10:30 AM' },
-    { id: '#1023', customer: 'Amit Sharma', items: 'Pizza x1', amount: '₦650', status: 'Preparing', time: '10:20 AM' },
-    { id: '#1022', customer: 'Priya Singh', items: 'Burger Combo x1', amount: '₦320', status: 'Pending', time: '10:10 AM' },
-    { id: '#1021', customer: 'Rohit Kumar', items: 'French Fries x1', amount: '₦180', status: 'Completed', time: '10:00 AM' },
-    { id: '#1020', customer: 'Neha Patel', items: 'Cold Coffee x1', amount: '₦150', status: 'Cancelled', time: '09:50 AM' },
+    { id: '#1024', customer: 'Rahul Kumar', items: 'Cheese Burger x1', amount: '₹450', status: 'Completed', time: '10:30 AM' },
+    { id: '#1023', customer: 'Amit Sharma', items: 'Pizza x1', amount: '₹650', status: 'Preparing', time: '10:20 AM' },
+    { id: '#1022', customer: 'Priya Singh', items: 'Burger Combo x1', amount: '₹320', status: 'Pending', time: '10:10 AM' },
+    { id: '#1021', customer: 'Rohit Kumar', items: 'French Fries x1', amount: '₹180', status: 'Completed', time: '10:00 AM' },
+    { id: '#1020', customer: 'Neha Patel', items: 'Cold Coffee x1', amount: '₹150', status: 'Cancelled', time: '09:50 AM' },
   ];
 
   const popularProducts = [

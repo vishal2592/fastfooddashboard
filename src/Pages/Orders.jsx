@@ -18,19 +18,22 @@ import {
   Clock,
   History,
   RefreshCw,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
 } from 'lucide-react';
 
 const Orders = () => {
   // Dummy order data – each order has a `completionTime` if status is 'Completed'
   const initialOrders = [
-    { id: '#1024', customer: 'Rahul Kumar', items: ['Cheese Burger x1', 'French Fries x1'], total: 12.48, status: 'Completed', time: '2026-08-07 10:30 AM', address: '123 Main St, City', completionTime: Date.now() - 3600000 }, // 1 hour ago
-    { id: '#1023', customer: 'Amit Sharma', items: ['Chicken Pizza x1', 'Cold Coffee x1'], total: 13.48, status: 'Processing', time: '2026-08-07 10:20 AM', address: '456 Oak Ave, Town', completionTime: null },
-    { id: '#1022', customer: 'Priya Singh', items: ['Veg Burger Combo x1'], total: 7.99, status: 'Pending', time: '2026-08-07 10:10 AM', address: '789 Pine Ln, Village', completionTime: null },
-    { id: '#1021', customer: 'Rohit Kumar', items: ['French Fries x2', 'Milkshake x1'], total: 8.97, status: 'Completed', time: '2026-08-07 10:00 AM', address: '321 Elm St, City', completionTime: Date.now() - 7200000 }, // 2 hours ago – will be removed
-    { id: '#1020', customer: 'Neha Patel', items: ['Cold Coffee x1'], total: 3.99, status: 'Cancelled', time: '2026-08-07 09:50 AM', address: '654 Maple Dr, Town', completionTime: null },
-    { id: '#1019', customer: 'Deepak Singh', items: ['Chicken Wrap x2', 'Onion Rings x1'], total: 15.97, status: 'Processing', time: '2026-08-07 09:30 AM', address: '987 Cedar Rd, Village', completionTime: null },
-    { id: '#1018', customer: 'Sneha Reddy', items: ['Cheese Burger x2', 'Cold Coffee x2'], total: 18.96, status: 'Completed', time: '2026-08-07 09:15 AM', address: '147 Birch Blvd, City', completionTime: Date.now() - 900000 }, // 15 min ago
-    { id: '#1017', customer: 'Vikram Patel', items: ['Chicken Pizza x1', 'French Fries x1'], total: 11.48, status: 'Pending', time: '2026-08-07 08:55 AM', address: '258 Willow Way, Town', completionTime: null },
+    { id: '#1024', customer: 'Rahul Kumar', items: ['Cheese Burger x1', 'French Fries x1'], total: 12.48, status: 'Completed', time: '2026-08-07 10:30 AM', address: '123 Main St, City', completionTime: Date.now() - 3600000, updatedBy: 'Admin' },
+    { id: '#1023', customer: 'Amit Sharma', items: ['Chicken Pizza x1', 'Cold Coffee x1'], total: 13.48, status: 'Processing', time: '2026-08-07 10:20 AM', address: '456 Oak Ave, Town', completionTime: null, updatedBy: null },
+    { id: '#1022', customer: 'Priya Singh', items: ['Veg Burger Combo x1'], total: 7.99, status: 'Pending', time: '2026-08-07 10:10 AM', address: '789 Pine Ln, Village', completionTime: null, updatedBy: null },
+    { id: '#1021', customer: 'Rohit Kumar', items: ['French Fries x2', 'Milkshake x1'], total: 8.97, status: 'Completed', time: '2026-08-07 10:00 AM', address: '321 Elm St, City', completionTime: Date.now() - 7200000, updatedBy: 'Admin' },
+    { id: '#1020', customer: 'Neha Patel', items: ['Cold Coffee x1'], total: 3.99, status: 'Cancelled', time: '2026-08-07 09:50 AM', address: '654 Maple Dr, Town', completionTime: null, updatedBy: 'Admin' },
+    { id: '#1019', customer: 'Deepak Singh', items: ['Chicken Wrap x2', 'Onion Rings x1'], total: 15.97, status: 'Processing', time: '2026-08-07 09:30 AM', address: '987 Cedar Rd, Village', completionTime: null, updatedBy: null },
+    { id: '#1018', customer: 'Sneha Reddy', items: ['Cheese Burger x2', 'Cold Coffee x2'], total: 18.96, status: 'Completed', time: '2026-08-07 09:15 AM', address: '147 Birch Blvd, City', completionTime: Date.now() - 900000, updatedBy: 'Admin' },
+    { id: '#1017', customer: 'Vikram Patel', items: ['Chicken Pizza x1', 'French Fries x1'], total: 11.48, status: 'Pending', time: '2026-08-07 08:55 AM', address: '258 Willow Way, Town', completionTime: null, updatedBy: null },
   ];
 
   const [orders, setOrders] = useState(initialOrders);
@@ -42,6 +45,7 @@ const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [view, setView] = useState('active'); // 'active' or 'history'
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const itemsPerPage = 5;
 
@@ -51,7 +55,6 @@ const Orders = () => {
       const now = Date.now();
       const twoHours = 2 * 60 * 60 * 1000;
 
-      // Separate completed orders that are older than 2 hours
       const toRemove = [];
       const remaining = orders.filter(order => {
         if (order.status === 'Completed' && order.completionTime) {
@@ -64,21 +67,14 @@ const Orders = () => {
         return true;
       });
 
-      // If any orders were removed, update states
       if (toRemove.length > 0) {
-        // Add to history
         setCompletedHistory(prev => [...prev, ...toRemove]);
-        // Update orders
         setOrders(remaining);
       }
     };
 
-    // Run check immediately
     checkAndMoveCompletedOrders();
-
-    // Set interval to check every 30 seconds
     const interval = setInterval(checkAndMoveCompletedOrders, 30000);
-
     return () => clearInterval(interval);
   }, [orders]);
 
@@ -94,7 +90,6 @@ const Orders = () => {
   const filteredHistory = completedHistory.filter(order => {
     const matchSearch = order.customer.toLowerCase().includes(search.toLowerCase()) ||
                         order.id.toLowerCase().includes(search.toLowerCase());
-    // History filter: we only show 'Completed' status, but we can allow All as well
     const matchFilter = filter === 'All' || filter === 'Completed' || order.status === filter;
     return matchSearch && matchFilter;
   });
@@ -127,18 +122,32 @@ const Orders = () => {
     setCurrentPage(page);
   };
 
-  // Simulate marking an order as completed (for testing)
-  const handleMarkCompleted = (id) => {
-    setOrders(orders.map(order => {
-      if (order.id === id) {
-        return {
-          ...order,
-          status: 'Completed',
-          completionTime: Date.now(),
-        };
-      }
-      return order;
-    }));
+  // Update order status from modal
+  const handleStatusUpdate = (id, newStatus) => {
+    setIsUpdating(true);
+    
+    setTimeout(() => {
+      setOrders(orders.map(order => {
+        if (order.id === id) {
+          const update = {
+            ...order,
+            status: newStatus,
+            updatedBy: 'Admin',
+          };
+          // If marking as completed, add completion time
+          if (newStatus === 'Completed') {
+            update.completionTime = Date.now();
+          } else {
+            update.completionTime = null;
+          }
+          return update;
+        }
+        return order;
+      }));
+      
+      setIsUpdating(false);
+      setIsModalOpen(false);
+    }, 500);
   };
 
   // Status color mapping
@@ -149,6 +158,14 @@ const Orders = () => {
     Cancelled: 'bg-gray-500/20 text-gray-400 border border-gray-500/30',
   };
 
+  // Status button configs for the modal
+  const statusButtons = [
+    { label: 'Completed', value: 'Completed', color: 'emerald', icon: CheckCircle },
+    { label: 'Processing', value: 'Processing', color: 'yellow', icon: Clock },
+    { label: 'Pending', value: 'Pending', color: 'red', icon: AlertCircle },
+    { label: 'Cancelled', value: 'Cancelled', color: 'gray', icon: XCircle },
+  ];
+
   // Render table rows
   const renderRows = (data) => {
     return data.map((order) => (
@@ -158,7 +175,7 @@ const Orders = () => {
         <td className="py-3 px-4 text-sm text-gray-400">
           {order.items.length} item{order.items.length > 1 ? 's' : ''}
         </td>
-        <td className="py-3 px-4 text-sm font-semibold text-white">${order.total.toFixed(2)}</td>
+        <td className="py-3 px-4 text-sm font-semibold text-white">₹{order.total.toFixed(2)}</td>
         <td className="py-3 px-4">
           <span className={`text-xs font-medium px-3 py-1 rounded-full ${statusColors[order.status]}`}>
             {order.status}
@@ -175,7 +192,7 @@ const Orders = () => {
             </button>
             {view === 'active' && (
               <button
-                onClick={() => handleMarkCompleted(order.id)}
+                onClick={() => handleStatusUpdate(order.id, 'Completed')}
                 className="p-1.5 rounded-lg hover:bg-emerald-500/20 text-emerald-400 transition"
                 title="Mark as Completed"
               >
@@ -348,7 +365,7 @@ const Orders = () => {
                   <p className="text-xs text-gray-400">{order.items.length} items</p>
                 </div>
                 <div className="flex items-center justify-between mt-3">
-                  <span className="text-lg font-bold text-white">${order.total.toFixed(2)}</span>
+                  <span className="text-lg font-bold text-white">₹{order.total.toFixed(2)}</span>
                   <span className="text-xs text-gray-400">{order.time}</span>
                 </div>
                 <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/5">
@@ -360,7 +377,7 @@ const Orders = () => {
                   </button>
                   {view === 'active' && (
                     <button
-                      onClick={() => handleMarkCompleted(order.id)}
+                      onClick={() => handleStatusUpdate(order.id, 'Completed')}
                       className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 transition"
                     >
                       <Clock size={16} /> Complete
@@ -421,10 +438,10 @@ const Orders = () => {
           </div>
         )}
 
-        {/* Order Details Modal */}
+        {/* Order Details Modal with Status Update Options - FIXED */}
         {isModalOpen && selectedOrder && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-[#141824] border border-white/10 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <div className="bg-[#141824] border border-white/10 rounded-2xl max-w-md w-full p-6 shadow-2xl my-4 max-h-[90vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-gray-200">Order Details</h2>
                 <button
@@ -453,10 +470,10 @@ const Orders = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-400">Total</p>
-                  <p className="text-lg font-bold text-white">${selectedOrder.total.toFixed(2)}</p>
+                  <p className="text-lg font-bold text-white">₹{selectedOrder.total.toFixed(2)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Status</p>
+                  <p className="text-sm text-gray-400">Current Status</p>
                   <span className={`text-xs font-medium px-3 py-1 rounded-full ${statusColors[selectedOrder.status]}`}>
                     {selectedOrder.status}
                   </span>
@@ -469,7 +486,47 @@ const Orders = () => {
                   <p className="text-sm text-gray-400">Delivery Address</p>
                   <p className="text-sm text-gray-200">{selectedOrder.address}</p>
                 </div>
+                {selectedOrder.updatedBy && (
+                  <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-2 text-center">
+                    <p className="text-xs text-purple-400">✓ Updated by {selectedOrder.updatedBy}</p>
+                  </div>
+                )}
               </div>
+
+              {/* Status Update Options - only in Active View */}
+              {view === 'active' && (
+                <div className="mt-6 pt-4 border-t border-white/5">
+                  <p className="text-sm text-gray-400 mb-3">Update Status</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {statusButtons.map((btn) => {
+                      const isActive = selectedOrder.status === btn.value;
+                      const colorClasses = {
+                        emerald: 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border-emerald-500/30',
+                        yellow: 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 border-yellow-500/30',
+                        red: 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border-red-500/30',
+                        gray: 'bg-gray-500/20 text-gray-400 hover:bg-gray-500/30 border-gray-500/30',
+                      };
+                      return (
+                        <button
+                          key={btn.value}
+                          onClick={() => handleStatusUpdate(selectedOrder.id, btn.value)}
+                          disabled={isUpdating || isActive}
+                          className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition
+                            ${colorClasses[btn.color]}
+                            ${isActive ? 'opacity-60 cursor-not-allowed ring-2 ring-offset-1 ring-offset-[#141824]' : 'hover:scale-105'}
+                            border
+                          `}
+                        >
+                          <btn.icon size={16} />
+                          {btn.label}
+                          {isActive && ' ✓'}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-center gap-3 mt-6">
                 <button
                   className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition"

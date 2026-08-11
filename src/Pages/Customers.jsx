@@ -21,16 +21,16 @@ import {
 } from 'lucide-react';
 
 const Customers = () => {
-  // Dummy customer data
+  // Dummy customer data – statuses updated to Available/Unavailable
   const initialCustomers = [
-    { id: 1, name: 'Rahul Kumar', email: 'rahul@example.com', phone: '+91 98765 43210', orders: 12, spent: 345.50, status: 'Active', joined: '2026-01-15' },
-    { id: 2, name: 'Amit Sharma', email: 'amit.sharma@example.com', phone: '+91 87654 32109', orders: 8, spent: 198.75, status: 'Active', joined: '2026-02-20' },
-    { id: 3, name: 'Priya Singh', email: 'priya.singh@example.com', phone: '+91 76543 21098', orders: 5, spent: 125.00, status: 'Inactive', joined: '2025-12-10' },
-    { id: 4, name: 'Rohit Kumar', email: 'rohit.k@example.com', phone: '+91 65432 10987', orders: 15, spent: 560.80, status: 'Active', joined: '2025-11-05' },
-    { id: 5, name: 'Neha Patel', email: 'neha.p@example.com', phone: '+91 54321 09876', orders: 3, spent: 67.20, status: 'Active', joined: '2026-03-01' },
-    { id: 6, name: 'Deepak Singh', email: 'deepak.s@example.com', phone: '+91 43210 98765', orders: 7, spent: 189.90, status: 'Inactive', joined: '2025-09-25' },
-    { id: 7, name: 'Sneha Reddy', email: 'sneha.r@example.com', phone: '+91 32109 87654', orders: 10, spent: 276.30, status: 'Active', joined: '2026-04-12' },
-    { id: 8, name: 'Vikram Patel', email: 'vikram.p@example.com', phone: '+91 21098 76543', orders: 6, spent: 154.00, status: 'Active', joined: '2026-02-28' },
+    { id: 1, name: 'Rahul Kumar', email: 'rahul@example.com', phone: '+91 98765 43210', orders: 12, spent: 345.50, status: 'Available', joined: '2026-01-15' },
+    { id: 2, name: 'Amit Sharma', email: 'amit.sharma@example.com', phone: '+91 87654 32109', orders: 8, spent: 198.75, status: 'Available', joined: '2026-02-20' },
+    { id: 3, name: 'Priya Singh', email: 'priya.singh@example.com', phone: '+91 76543 21098', orders: 5, spent: 125.00, status: 'Unavailable', joined: '2025-12-10' },
+    { id: 4, name: 'Rohit Kumar', email: 'rohit.k@example.com', phone: '+91 65432 10987', orders: 15, spent: 560.80, status: 'Available', joined: '2025-11-05' },
+    { id: 5, name: 'Neha Patel', email: 'neha.p@example.com', phone: '+91 54321 09876', orders: 3, spent: 67.20, status: 'Available', joined: '2026-03-01' },
+    { id: 6, name: 'Deepak Singh', email: 'deepak.s@example.com', phone: '+91 43210 98765', orders: 7, spent: 189.90, status: 'Unavailable', joined: '2025-09-25' },
+    { id: 7, name: 'Sneha Reddy', email: 'sneha.r@example.com', phone: '+91 32109 87654', orders: 10, spent: 276.30, status: 'Available', joined: '2026-04-12' },
+    { id: 8, name: 'Vikram Patel', email: 'vikram.p@example.com', phone: '+91 21098 76543', orders: 6, spent: 154.00, status: 'Available', joined: '2026-02-28' },
   ];
 
   const [customers, setCustomers] = useState(initialCustomers);
@@ -45,7 +45,7 @@ const Customers = () => {
     name: '',
     email: '',
     phone: '',
-    status: 'Active',
+    status: 'Available',
   });
 
   const itemsPerPage = 5;
@@ -95,13 +95,13 @@ const Customers = () => {
     };
     setCustomers([...customers, newCustomer]);
     setIsAddModalOpen(false);
-    setFormData({ name: '', email: '', phone: '', status: 'Active' });
+    setFormData({ name: '', email: '', phone: '', status: 'Available' });
   };
 
-  // Status color mapping
+  // Status color mapping – updated keys
   const statusColors = {
-    Active: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
-    Inactive: 'bg-gray-500/20 text-gray-400 border border-gray-500/30',
+    Available: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
+    Unavailable: 'bg-gray-500/20 text-gray-400 border border-gray-500/30',
   };
 
   return (
@@ -145,8 +145,8 @@ const Customers = () => {
             className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-purple-500/50 transition"
           >
             <option value="All">All Status</option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
+            <option value="Available">Available</option>
+            <option value="Unavailable">Unavailable</option>
           </select>
           <div className="flex border border-white/10 rounded-xl overflow-hidden">
             <button
@@ -190,7 +190,7 @@ const Customers = () => {
                   <td className="py-3 px-4 text-sm text-gray-400">{customer.email}</td>
                   <td className="py-3 px-4 text-sm text-gray-400">{customer.phone}</td>
                   <td className="py-3 px-4 text-sm text-gray-300">{customer.orders}</td>
-                  <td className="py-3 px-4 text-sm font-semibold text-white">${customer.spent.toFixed(2)}</td>
+                  <td className="py-3 px-4 text-sm font-semibold text-white">₹{customer.spent.toFixed(2)}</td>
                   <td className="py-3 px-4">
                     <span className={`text-xs font-medium px-3 py-1 rounded-full ${statusColors[customer.status]}`}>
                       {customer.status}
@@ -253,7 +253,7 @@ const Customers = () => {
                 </div>
                 <div>
                   <p className="text-xs text-gray-400">Spent</p>
-                  <p className="font-semibold text-white">${customer.spent.toFixed(2)}</p>
+                  <p className="font-semibold text-white">₹{customer.spent.toFixed(2)}</p>
                 </div>
                 <div className="col-span-2">
                   <p className="text-xs text-gray-400">Phone</p>
@@ -368,7 +368,7 @@ const Customers = () => {
                 <p className="text-sm text-gray-400">Total Spent</p>
                 <p className="text-gray-200 flex items-center gap-2">
                   <DollarSign size={16} className="text-gray-400" />
-                  ${selectedCustomer.spent.toFixed(2)}
+                  ₹{selectedCustomer.spent.toFixed(2)}
                 </p>
               </div>
               <div>
@@ -445,8 +445,8 @@ const Customers = () => {
                   onChange={(e) => setFormData({ ...formData, status: e.target.value })}
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-gray-200 focus:outline-none focus:border-purple-500/50 transition"
                 >
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
+                  <option value="Available">Available</option>
+                  <option value="Unavailable">Unavailable</option>
                 </select>
               </div>
             </div>
