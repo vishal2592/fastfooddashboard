@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Adminlayout from "./layout/Adminlayout";
 
@@ -16,51 +16,71 @@ import Subcategories from "./Pages/Subcategories";
 import Payments from "./Pages/Payments";
 import Delivery from "./Pages/Delivery";
 import Profile from "./Pages/Profile";
-import Setting from "./Pages/Setting"
+import Setting from "./Pages/Setting";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+
+import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
   return (
     <Routes>
 
-      {/* Admin Layout */}
-      <Route path="/admin" element={<Adminlayout />}>
+      {/* Root */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* Dashboard */}
-        <Route index element={<Dashboard />} />
+      {/* Public Routes */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
-        
-        <Route path="categories" element={<Categories />} />
+      {/* Private Admin Routes */}
+      <Route element={<PrivateRoute />}>
 
-        <Route path="subcategories" element={<Subcategories />} />
+        <Route path="/admin" element={<Adminlayout />}>
 
-        {/* Products */}
-        <Route path="products" element={<Products />} />
+          {/* Dashboard */}
+          <Route index element={<Dashboard />} />
 
-        {/* Orders */}
-        <Route path="orders" element={<Orders />} />
+          {/* Categories */}
+          <Route path="categories" element={<Categories />} />
 
-        {/* Customers */}
-        <Route path="customers" element={<Customers />} />
+          {/* Subcategories */}
+          <Route path="subcategories" element={<Subcategories />} />
 
-        {/* Offers */}
-        <Route path="offers" element={<Offers />} />
+          {/* Products */}
+          <Route path="products" element={<Products />} />
 
-        <Route path="payments" element={<Payments />} />
+          {/* Orders */}
+          <Route path="orders" element={<Orders />} />
 
-        <Route path="delivery" element={<Delivery />} />
+          {/* Customers */}
+          <Route path="customers" element={<Customers />} />
 
-        {/* Reviews */}
-        <Route path="reviews" element={<Reviews />} />
+          {/* Offers */}
+          <Route path="offers" element={<Offers />} />
 
-        {/* Banner */}
-        <Route path="banner" element={<Banner />} />
+          {/* Payments */}
+          <Route path="payments" element={<Payments />} />
 
-        {/* Reports */}
-        <Route path="reports" element={<Reports />} />
+          {/* Delivery */}
+          <Route path="delivery" element={<Delivery />} />
 
-        <Route path="profile" element={<Profile />} />
+          {/* Reviews */}
+          <Route path="reviews" element={<Reviews />} />
 
-        <Route path="setting" element={<Setting />} />
+          {/* Banner */}
+          <Route path="banner" element={<Banner />} />
+
+          {/* Reports */}
+          <Route path="reports" element={<Reports />} />
+
+          {/* Profile */}
+          <Route path="profile" element={<Profile />} />
+
+          {/* Setting */}
+          <Route path="setting" element={<Setting />} />
+
+        </Route>
 
       </Route>
 
