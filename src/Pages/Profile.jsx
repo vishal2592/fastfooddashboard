@@ -1,4 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import {
   User,
   Mail,
@@ -14,18 +16,28 @@ import {
   LogOut,
   CheckCircle,
   AlertCircle,
+  Loader2,
 } from 'lucide-react';
+import { getAdminProfile } from '../../redux/slicer/adminSlice'; // adjust path
 
 const Profile = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { admin, loading, error, success } = useSelector((state) => state.admin);
+
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: 'Admin User',
-    email: 'admin@fastfood.com',
-    phone: '+91 98765 43210',
-    address: '123 Food Street, City, State 12345',
-    bio: 'Restaurant Manager | Passionate about food quality and customer satisfaction.',
+    name: '',
+    email: '',
+    phone: '+91 98765 43210', // placeholder – not in model
+    address: '123 Food Street, City, State 12345', // placeholder
+    bio: 'Restaurant Manager | Passionate about food quality and customer satisfaction.', // placeholder
   });
-  const [avatar, setAvatar] = useState('https://ui-avatars.com/api/?name=Admin+User&background=7C3AED&color=fff&size=128');
+  const [avatar, setAvatar] = useState(
+    admin?.name
+      ? `https://ui-avatars.com/api/?name=${encodeURIComponent(admin.name)}&background=7C3AED&color=fff&size=128`
+      : 'https://ui-avatars.com/api/?name=Admin+User&background=7C3AED&color=fff&size=128'
+  );
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -39,6 +51,36 @@ const Profile = () => {
   });
   const [saveSuccess, setSaveSuccess] = useState(false);
   const fileInputRef = useRef(null);
+
+  // Fetch profile on mount
+  // useEffect(() => {
+  //   dispatch(getAdminProfile());
+  // }, [dispatch]);
+
+  // Update formData when admin data loads
+  useEffect(() => {
+    if (admin) {
+      setFormData((prev) => ({
+        ...prev,
+        name: admin.name || prev.name,
+        email: admin.email || prev.email,
+        // phone and address are not in model, keep placeholder
+      }));
+      // Update avatar if name changes
+      if (admin.name) {
+        setAvatar(
+          `https://ui-avatars.com/api/?name=${encodeURIComponent(admin.name)}&background=7C3AED&color=fff&size=128`
+        );
+      }
+    }
+  }, [admin]);
+
+  // Redirect if not authenticated (optional)
+  useEffect(() => {
+    if (error && error === 'Unauthorized') {
+      navigate('/login');
+    }
+  }, [error, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -69,7 +111,7 @@ const Profile = () => {
   };
 
   const handleSave = () => {
-    // Simulate saving
+    // For now, only update local state – you can add an API call later
     setSaveSuccess(true);
     setIsEditing(false);
     setTimeout(() => setSaveSuccess(false), 3000);
@@ -77,16 +119,46 @@ const Profile = () => {
 
   const handleCancel = () => {
     setIsEditing(false);
-    // Reset form data to original (we don't have original state stored, but we could)
-    // For demo, we'll just revert to initial values (hardcoded)
-    setFormData({
-      name: 'Admin User',
-      email: 'admin@fastfood.com',
-      phone: '+91 98765 43210',
-      address: '123 Food Street, City, State 12345',
-      bio: 'Restaurant Manager | Passionate about food quality and customer satisfaction.',
-    });
+    // Revert to the original admin data
+    if (admin) {
+      setFormData({
+        name: admin.name || '',
+        email: admin.email || '',
+        phone: formData.phone, // keep placeholder
+        address: formData.address,
+        bio: formData.bio,
+      });
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0b0e1a] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-12 h-12 text-purple-500 animate-spin" />
+          <p className="text-gray-400">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#0b0e1a] flex items-center justify-center p-4">
+        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 max-w-md text-center">
+          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
+          <h2 className="text-xl font-semibold text-red-400 mb-2">Failed to load profile</h2>
+          <p className="text-gray-400">{error}</p>
+          <button
+            onClick={() => dispatch(getAdminProfile())}
+            className="mt-4 px-4 py-2 bg-purple-500 text-white rounded-xl hover:bg-purple-600 transition"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0b0e1a] p-3 text-gray-100 font-sans overflow-x-hidden">
@@ -170,6 +242,11 @@ const Profile = () => {
                 <>
                   <h2 className="text-2xl font-bold text-gray-200">{formData.name}</h2>
                   <p className="text-gray-400">{formData.email}</p>
+                  {admin?.role && (
+                    <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium bg-purple-500/20 text-purple-300 rounded-full">
+                      {admin.role}
+                    </span>
+                  )}
                   <p className="text-sm text-gray-500 mt-1">{formData.bio}</p>
                 </>
               ) : (

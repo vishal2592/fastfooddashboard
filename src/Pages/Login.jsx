@@ -1,59 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  LogIn,
-  CheckCircle,
-} from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Mail, Lock, Eye, EyeOff, LogIn, CheckCircle } from 'lucide-react';
+import { loginAdmin } from '../../redux/slicer/adminSlice'; // adjust path
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  // Redux state
+  const { admin, loading, error: reduxError } = useSelector(
+  (state) => state.admin
+);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [localError, setLocalError] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError('');
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!email || !password) {
-      setError('Please fill in all fields');
-      return;
+  setLocalError("");
+
+  if (!email || !password) {
+    setLocalError("Please fill in all fields");
+    return;
+  }
+
+  try {
+    await dispatch(
+      loginAdmin({ email, password })
+    ).unwrap();
+
+    if (rememberMe) {
+      localStorage.setItem("rememberMe", "true");
+    } else {
+      localStorage.removeItem("rememberMe");
     }
 
-    setIsLoading(true);
+    navigate("/admin");
+  } catch (error) {
+    console.log(error);
+  }
+};
+   
 
-    // Get users from localStorage
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find(
-      (u) => u.email === email && u.password === password
-    );
+  // Redirect on success
+useEffect(() => {
+  if (admin) {
+    navigate("/admin");
+  }
+}, [admin, navigate]);
 
-    setTimeout(() => {
-      setIsLoading(false);
-      if (user) {
-        localStorage.setItem('token', 'mock-jwt-token');
-        if (rememberMe) {
-          localStorage.setItem('rememberMe', 'true');
-        } else {
-          localStorage.removeItem('rememberMe');
-        }
-        navigate('/admin');
-      } else {
-        setError('Invalid email or password');
-      }
-    }, 800);
-  };
+  const displayError = localError || reduxError;
 
   return (
     <div className="min-h-screen w-full bg-[#0b0e1a] flex items-center justify-center p-4 sm:p-6 md:p-8 font-sans overflow-x-hidden">
-      {/* Animated gradient background */}
+      {/* Background (unchanged) */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
@@ -73,10 +78,10 @@ const Login = () => {
             <p className="text-sm text-gray-400 mt-1">Sign in to your admin account</p>
           </div>
 
-          {error && (
+          {displayError && (
             <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-2 text-red-400 text-sm">
               <span className="w-1.5 h-1.5 bg-red-400 rounded-full flex-shrink-0"></span>
-              {error}
+              {displayError}
             </div>
           )}
 
@@ -139,6 +144,7 @@ const Login = () => {
               <button
                 type="button"
                 className="text-sm text-purple-400 hover:text-purple-300 transition"
+                onClick={() => {/* Handle forgot password */}}
               >
                 Forgot password?
               </button>
@@ -146,10 +152,10 @@ const Login = () => {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={loading}
               className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl font-medium hover:shadow-lg hover:shadow-purple-500/25 transition transform hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
             >
-              {isLoading ? (
+              {loading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                   Signing in...
@@ -163,7 +169,6 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Link to Register */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-400">
               Don't have an account?{' '}

@@ -38,7 +38,7 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/api/admin/auth", adminAuthRoutes);
+app.use("/api/admin", adminAuthRoutes);
 app.use("/api/categories", categoryRoutes);
 
 // =========================

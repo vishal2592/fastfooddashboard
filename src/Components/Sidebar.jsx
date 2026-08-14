@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   LayoutDashboard,
   FolderOpen,
@@ -14,7 +15,9 @@ import {
   Image,
   BarChart3,
   LogOut,
+  Loader2,
 } from 'lucide-react';
+import { logoutAdmin } from '../../redux/slicer/adminSlice'; // adjust path
 
 const menuItems = [
   { title: 'Dashboard', path: '/admin', icon: LayoutDashboard },
@@ -26,11 +29,15 @@ const menuItems = [
   { title: 'Payments', path: '/admin/payments', icon: CreditCard },
   { title: 'Delivery', path: '/admin/delivery', icon: Truck },
   { title: 'Banner', path: '/admin/banner', icon: Image },
-  
-
 ];
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { admin, loading: logoutLoading } = useSelector((state) => state.admin);
+  console.log("Current Admin:", admin);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -65,6 +72,17 @@ const Sidebar = () => {
     if (title === 'Offers') return '3';
     return null;
   };
+
+ const handleLogout = async () => {
+  try {
+    await dispatch(logoutAdmin()).unwrap();
+
+    navigate("/login", { replace: true });
+
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   const sidebarClasses = `
     relative bg-gradient-to-b from-[#0f1322] to-[#1a1f35]
@@ -169,7 +187,7 @@ const Sidebar = () => {
           <div className={`flex items-center gap-3 ${isCollapsed ? 'flex-col' : ''}`}>
             <div className="relative flex-shrink-0">
               <img
-                src="https://ui-avatars.com/api/?name=Admin&background=7C3AED&color=fff&size=40"
+                src={`https://ui-avatars.com/api/?name=${admin?.name || 'Admin'}&background=7C3AED&color=fff&size=40`}
                 alt="Admin"
                 className="w-10 h-10 rounded-full ring-2 ring-purple-500/40 shadow-lg shadow-purple-500/20"
               />
@@ -177,19 +195,27 @@ const Sidebar = () => {
             </div>
             {!isCollapsed && (
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-200 truncate">Admin</p>
-                <p className="text-xs text-gray-400 truncate">administrator</p>
+                <p className="text-sm font-medium text-gray-200 truncate">{admin?.name || 'Admin'}</p>
+                <p className="text-xs text-gray-400 truncate capitalize">{admin?.role || 'administrator'}</p>
               </div>
             )}
             {!isCollapsed && (
-              <button className="p-1.5 rounded-lg hover:bg-white/5 text-gray-400 hover:text-red-400 transition">
-                <LogOut size={18} />
+              <button
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className="p-1.5 rounded-lg hover:bg-white/5 text-gray-400 hover:text-red-400 transition disabled:opacity-50"
+              >
+                {isLoggingOut ? <Loader2 size={18} className="animate-spin" /> : <LogOut size={18} />}
               </button>
             )}
           </div>
           {isCollapsed && (
-            <button className="mt-3 p-1.5 rounded-lg hover:bg-white/5 text-gray-400 hover:text-red-400 transition">
-              <LogOut size={18} />
+            <button
+              onClick={handleLogout}
+              disabled={isLoggingOut}
+              className="mt-3 p-1.5 rounded-lg hover:bg-white/5 text-gray-400 hover:text-red-400 transition disabled:opacity-50"
+            >
+              {isLoggingOut ? <Loader2 size={18} className="animate-spin" /> : <LogOut size={18} />}
             </button>
           )}
         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import Adminlayout from "./layout/Adminlayout";
@@ -21,8 +21,18 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 
 import PrivateRoute from "./components/PrivateRoute";
+import { useDispatch } from "react-redux";
+import { getAdminProfile } from "../redux/slicer/adminSlice";
+
 
 const App = () => {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+  dispatch(getAdminProfile());
+}, [dispatch]);
+
   return (
     <Routes>
 
