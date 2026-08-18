@@ -42,6 +42,8 @@ app.get("/", (req, res) => {
 app.use("/api/admin", adminAuthRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/users", require("./routes/userRoutes"));
+
 
 // =========================
 // DATABASE
