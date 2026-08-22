@@ -25,6 +25,8 @@ const menuItems = [
   // { title: 'Subcategories', path: '/admin/subcategories', icon: Layers },
   { title: 'Products', path: '/admin/products', icon: UtensilsCrossed },
   { title: 'Orders', path: '/admin/orders', icon: ShoppingBag },
+  // { title: 'Offers', path: '/admin/offers', icon: ShoppingBag },
+  { title: 'Gallery', path: '/admin/gallery', icon: ShoppingBag },
   { title: 'Customers', path: '/admin/customers', icon: Users },
   { title: 'Payments', path: '/admin/payments', icon: CreditCard },
   { title: 'Delivery', path: '/admin/delivery', icon: Truck },

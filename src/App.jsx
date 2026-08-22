@@ -7,7 +7,7 @@ import Dashboard from "./Pages/Dashboard";
 import Products from "./Pages/Products";
 import Orders from "./Pages/Orders";
 import Customers from "./Pages/Customers";
-import Offers from "./Pages/Offers";
+// import Offers from "./Pages/Offers";
 import Reviews from "./Pages/Reviews";
 import Banner from "./Pages/Banner";
 import Reports from "./Pages/Reports";
@@ -23,6 +23,8 @@ import Register from "./Pages/Register";
 import PrivateRoute from "./components/PrivateRoute";
 import { useDispatch } from "react-redux";
 import { getAdminProfile } from "../redux/slicer/adminSlice";
+import Gallery from "./Pages/Gallery";
+
 
 
 const App = () => {
@@ -63,11 +65,10 @@ const App = () => {
           {/* Orders */}
           <Route path="orders" element={<Orders />} />
 
+          <Route path="gallery" element={<Gallery />} />
+
           {/* Customers */}
           <Route path="customers" element={<Customers />} />
-
-          {/* Offers */}
-          <Route path="offers" element={<Offers />} />
 
           {/* Payments */}
           <Route path="payments" element={<Payments />} />
